@@ -1,4 +1,5 @@
 /sand
 /text
+/test
 *.pyc
 notification_service/.env
