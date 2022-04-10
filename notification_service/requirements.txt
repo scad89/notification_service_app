@@ -19,11 +19,14 @@ click==8.1.2
     #   pip-compile-multi
     #   pip-tools
 coreapi==2.3.3
-    # via -r requirements.in
+    # via
+    #   -r requirements.in
+    #   drf-yasg
 coreschema==0.0.4
     # via
     #   -r requirements.in
     #   coreapi
+    #   drf-yasg
 coverage[toml]==6.3.2
     # via pytest-cov
 django==4.0.3
@@ -34,6 +37,9 @@ django==4.0.3
     #   django-js-asset
     #   django-ranged-response
     #   django-simple-captcha
+    #   django-taggit
+    #   djangorestframework
+    #   drf-yasg
 django-annoying==0.10.6
     # via -r requirements.in
 django-ckeditor==6.3.1
@@ -50,12 +56,22 @@ django-ranged-response==0.2.0
     #   django-simple-captcha
 django-simple-captcha==0.5.17
     # via -r requirements.in
+django-taggit==2.1.0
+    # via -r requirements.in
 django-templated-mail==1.1.1
+    # via -r requirements.in
+djangorestframework==3.13.1
+    # via
+    #   -r requirements.in
+    #   drf-yasg
+drf-yasg==1.20.0
     # via -r requirements.in
 gunicorn==20.1.0
     # via -r requirements.in
 idna==3.3
     # via requests
+inflection==0.5.1
+    # via drf-yasg
 iniconfig==1.1.1
     # via pytest
 itypes==1.2.0
@@ -67,9 +83,13 @@ jinja2==3.1.1
 markupsafe==2.1.1
     # via jinja2
 packaging==21.3
-    # via pytest
+    # via
+    #   drf-yasg
+    #   pytest
 pep517==0.12.0
     # via pip-tools
+phonenumberslite==8.12.46
+    # via -r requirements.in
 pillow==9.1.0
     # via django-simple-captcha
 pip-compile-multi==2.4.5
@@ -99,8 +119,14 @@ python-dateutil==2.8.2
     # via -r requirements.in
 python-dotenv==0.20.0
     # via -r requirements.in
+pytz==2022.1
+    # via djangorestframework
 requests==2.27.1
     # via coreapi
+ruamel-yaml==0.17.21
+    # via drf-yasg
+ruamel-yaml-clib==0.2.6
+    # via ruamel-yaml
 six==1.16.0
     # via
     #   django-annoying
@@ -117,7 +143,9 @@ tomli==2.0.1
 toposort==1.7
     # via pip-compile-multi
 uritemplate==4.1.1
-    # via coreapi
+    # via
+    #   coreapi
+    #   drf-yasg
 urllib3==1.26.9
     # via requests
 wheel==0.37.1
