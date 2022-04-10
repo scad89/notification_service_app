@@ -6,11 +6,19 @@ from rest_framework import permissions
 from .models import Notification, Client, Message
 from .serializers import (
     ClientCreateSerializer,
-    ClientSerializer
+    ClientSerializer,
+    ClientDetailSerializer,
+    UpdateDetailClientSerializer,
+    DeleteDetailClientSerializer,
+    NotificationCreateSerializer,
+    NotificationSerializer,
+    NotificationDetailSerializer,
+    UpdateDetailNotificationSerializer,
+    DeleteDetailNotificationSerializer
 )
 
 
-class NewClientListView(generics.CreateAPIView):
+class NewClientCreateAPIView(generics.CreateAPIView):
     """Создание клиента"""
     queryset = Client.objects.all()
     serializer_class = ClientCreateSerializer
@@ -23,3 +31,53 @@ class GetClientListView(generics.ListAPIView):
     """Вывод списка клиентов"""
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
+
+
+class GetClientDetailRetrieveAPIView(generics.RetrieveAPIView):
+    """Вывод детальной информации о клиенте"""
+    queryset = Client.objects.all()
+    serializer_class = ClientDetailSerializer
+    lookup_field = 'pk'
+
+
+class UpdateClientRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
+    """Редактирование данных клиента"""
+    queryset = Client.objects.all()
+    serializer_class = UpdateDetailClientSerializer
+
+
+class DeleteClientRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
+    """Удаление клиента"""
+    queryset = Client.objects.all()
+    serializer_class = DeleteDetailClientSerializer
+
+
+class NewNotificationCreateAPIView(generics.CreateAPIView):
+    """Создание рассылки"""
+    queryset = Notification.objects.all()
+    serializer_class = NotificationCreateSerializer
+
+
+class GetNotificationtListView(generics.ListAPIView):
+    """Вывод списка рассылок"""
+    queryset = Notification.objects.all()
+    serializer_class = NotificationSerializer
+
+
+class GetNotificationDetailRetrieveAPIView(generics.RetrieveAPIView):
+    """Вывод детальной информации о рассылке"""
+    queryset = Notification.objects.all()
+    serializer_class = NotificationDetailSerializer
+    lookup_field = 'pk'
+
+
+class UpdateNotificationRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
+    """Редактирование атрибутов рассылки"""
+    queryset = Notification.objects.all()
+    serializer_class = UpdateDetailNotificationSerializer
+
+
+class DeleteNotificationRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
+    """Удаление рассылки"""
+    queryset = Notification.objects.all()
+    serializer_class = DeleteDetailNotificationSerializer
