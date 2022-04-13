@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework import permissions
 from .models import Notification, Client, Message
+from rest_framework import viewsets
 from .serializers import (
     ClientCreateSerializer,
     ClientSerializer,
@@ -14,7 +15,7 @@ from .serializers import (
     NotificationSerializer,
     NotificationDetailSerializer,
     UpdateDetailNotificationSerializer,
-    DeleteDetailNotificationSerializer
+    DeleteDetailNotificationSerializer,
 )
 
 

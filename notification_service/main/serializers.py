@@ -17,7 +17,7 @@ class ClientSerializer(serializers.ModelSerializer):
     """Вывод всех клиентов"""
     class Meta:
         model = Client
-        fields = ['pk', 'name', 'surname', 'phone']
+        fields = ['id', 'name', 'surname', 'phone']
 
 
 class ClientDetailSerializer(serializers.ModelSerializer):
