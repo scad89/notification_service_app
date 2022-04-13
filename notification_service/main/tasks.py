@@ -18,8 +18,29 @@ TOKEN = os.getenv("TOKEN")
 logger = get_task_logger(__name__)
 
 
-@app.task(bind=True, retry_backoff=True)
-def send_notification(self, data, id_notification, id_client, url=URL, token=TOKEN):
+def complete_task(task):
+    task.enabled = False
+    return task.save()
+
+
+def check_periodic_task(notification_name):
+    return PeriodicTask.objects.get(
+        name=f'Create task: {notification_name}')
+
+
+def create_periodic_task(notification_name, id_notification, id_client, time, data):
+    return PeriodicTask.objects.create(
+        name=f'Create task: {notification_name}',
+        task='send_notification',
+        interval=IntervalSchedule.objects.get(
+            every=time, period='seconds'),
+        args=json.dumps(id_notification, id_client, data),
+        start_time=timezone.now(),
+    )
+
+
+@app.task(bind=True, retry_backoff=5)
+def send_notification(self, id_notification, id_client, data, url=URL, token=TOKEN):
     notification = Notification.objects.get(pk=id_notification)
     client = Client.objects.get(pk=id_client)
     message = Message.objects.filter(
@@ -28,10 +49,15 @@ def send_notification(self, data, id_notification, id_client, url=URL, token=TOK
     date_and_time_client = datetime.datetime.now(timezone_client)
 
     if notification.start_date <= date_and_time_client <= notification.end_date and message.status in ['No Sent', 'Waiting', 'Wrong Time']:
-        if 3 < int(date_and_time_client.strftime('%H:%M:%S')[:2]) < 16:
+        if 22 < int(date_and_time_client.strftime('%H:%M:%S')[:2]) < 8:
             logger.info(
                 f"Wrong time to send notification '{data['id']}'. Need to try later")
             Message.objects.filter(pk=data['id']).update(status='Wrong Time')
+            create_periodic_task(notification.name,
+                                 notification.id,
+                                 client.id,
+                                 60*60,
+                                 data)
         else:
             header = {
                 'Authorization': f'Bearer {token}',
@@ -43,15 +69,28 @@ def send_notification(self, data, id_notification, id_client, url=URL, token=TOK
                 logger.error(
                     f"Notification '{data['id']}' is error. Server has problem.")
                 Message.objects.filter(pk=data['id']).update(status='Error')
+                task_error = PeriodicTask.objects.get(
+                    name=f'Create task: {notification.name}')
+                if task_error:
+                    complete_task(task_error)
+                create_periodic_task(notification.name,
+                                     notification.id,
+                                     client.id,
+                                     20,
+                                     data)
                 raise exc
             else:
                 logger.info(f"Notification is '{data['id']}' sent success!")
                 Message.objects.filter(pk=data['id']).update(status='Success')
                 task_success = PeriodicTask.objects.get(
                     name=f'Create task: {notification.name}')
-                task_success.enabled = False
-                task_success.save()
-    elif date_and_time_client < notification.start_date and message.status != 'No Sent':
-        Message.objects.filter(pk=data['id']).update(status='Waiting')
+                if task_success:
+                    complete_task(task_success)
 
-# задать условие, чтобы снимать задачу
+    elif date_and_time_client < notification.start_date and message.status == 'No Sent':
+        Message.objects.filter(pk=data['id']).update(status='Waiting')
+        create_periodic_task(notification.name,
+                             notification.id,
+                             client.id,
+                             60*60*24,
+                             data)
