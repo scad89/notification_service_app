@@ -19,11 +19,11 @@ class Command(BaseCommand):
         for client in clients:
             Message.objects.create(
                 status="No Sent",
-                id_notification=options['notification_id'][0],
+                id_notification=notification.id,
                 id_client=client.id
             )
             message = Message.objects.filter(
-                id_notification=options['notification_id'][0], id_client=client.id).first()
+                id_notification=notification.id, id_client=client.id).first()
             data = {
                 'id': message.id,
                 "phone": client.phone,
@@ -34,12 +34,10 @@ class Command(BaseCommand):
 
             PeriodicTask.objects.create(
                 name=f'Create task: {notification.name}',
-                task='repeat_order_make',
+                task='send_notification',
                 interval=IntervalSchedule.objects.get(
                     every=60, period='seconds'),
                 args=json.dumps([options['notification_id'][0]], data,
                                 id_notification, id_client),
                 start_time=timezone.now(),
             )
-
-#            order.refresh_from_db()
