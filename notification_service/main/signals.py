@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .models import Notification, Client, Message
-from tasks import send_notification
+from .tasks import send_notification
 
 
 @receiver(post_save, sender=Notification, dispatch_uid="create_message")
@@ -24,4 +24,6 @@ def create_message(sender, instance, created, **kwargs):
                 "phone": client.phone,
                 "text": notification.text
             }
-            send_notification.delay(notification.id, client.id, data)
+            notification_id = notification.id
+            client_id = client.id
+            send_notification.apply_async((notification_id, client_id, data))

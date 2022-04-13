@@ -7,7 +7,7 @@ from django.utils import timezone
 from notification_service.celery import app
 from celery.utils.log import get_task_logger
 from django_celery_beat.models import PeriodicTask, IntervalSchedule
-from models import Notification, Client, Message
+from .models import Notification, Client, Message
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -40,9 +40,9 @@ def create_periodic_task(notification_name, id_notification, id_client, time, da
 
 
 @app.task(bind=True, retry_backoff=5)
-def send_notification(self, id_notification, id_client, data, url=URL, token=TOKEN):
-    notification = Notification.objects.get(pk=id_notification)
-    client = Client.objects.get(pk=id_client)
+def send_notification(self, notification_id, client_id, data, url=URL, token=TOKEN):
+    notification = Notification.objects.get(pk=notification_id)
+    client = Client.objects.get(pk=client_id)
     message = Message.objects.filter(
         id_notification=notification.id).filter(id_client=client.id)
     timezone_client = pytz.timezone(client.time_zone)
