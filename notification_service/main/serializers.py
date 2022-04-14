@@ -7,7 +7,7 @@ class MessageSerializer(serializers.ModelSerializer):
     """Статусы сообщений для вывода в статистике"""
     class Meta:
         model = Message
-        fields = ['status']
+        fields = ['pk', 'status']
 
 
 class AllMessageSerializer(serializers.ModelSerializer):
@@ -22,6 +22,17 @@ class AllMessageSerializer(serializers.ModelSerializer):
         fields = ['pk', 'status', 'id_notification', 'id_client']
 
 
+class MessageDeatailSerializer(serializers.ModelSerializer):
+    """Вывод детальной информации о сообщении статуса"""
+    id_client = serializers.SlugRelatedField(
+        slug_field='surname', read_only=True)
+
+    class Meta:
+        model = Message
+        fields = ['pk', 'create_date', 'status',
+                  'id_client']
+
+
 class MessageDetailSerializer(serializers.ModelSerializer):
     """Вывод детальной информации о клиенте"""
     id_notification = serializers.SlugRelatedField(
@@ -34,26 +45,12 @@ class MessageDetailSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class MessageDeatailSerializer(serializers.ModelSerializer):
-    """Статусы сообщений для вывода в статистике"""
-    id_client = serializers.SlugRelatedField(
-        slug_field='surname', read_only=True)
-
-    class Meta:
-        model = Message
-        fields = ['pk', 'create_date', 'status',
-                  'id_client']
-
-
 class ClientCreateSerializer(serializers.ModelSerializer):
     """Добавления нового клиента в справочник"""
 
     class Meta:
         model = Client
         fields = ['name', 'surname', 'phone', 'slug', 'time_zone']
-
-        def save(self):
-            mobile_code = self.validated_data['phone'][1:4]
 
 
 class ClientSerializer(serializers.ModelSerializer):
@@ -129,31 +126,3 @@ class DeleteDetailNotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = ['unvisible_notification']
-
-
-class MessageCreateSerializer(serializers.ModelSerializer):    # для теста
-    """Добавления нового сообщения"""
-
-    class Meta:
-        model = Message
-        fields = ['status', 'id_notification', 'id_client']
-
-
-class MessageSerializer(serializers.ModelSerializer):    # в общей
-    """Статусы сообщений для вывода в статистике"""
-    class Meta:
-        model = Message
-        fields = ['pk', 'status']
-
-
-class ResultsSerializer(serializers.ModelSerializer):
-    """Вывод результатов завершённых опросов"""
-    to_notification = MessageSerializer(many=True)
-    count_status = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Notification
-        fields = ['name_notification', 'to_notification', 'count_status']
-
-    def get_count_status(self, obj):
-        return obj.to_notification.count()

@@ -1,10 +1,6 @@
-import datetime
-from django.forms import ValidationError
-from rest_framework.response import Response
 from rest_framework import generics
-from rest_framework import permissions
 from .models import Notification, Client, Message
-from rest_framework import viewsets
+from django.db.models import Prefetch
 from .serializers import (
     ClientCreateSerializer,
     ClientSerializer,
@@ -16,10 +12,8 @@ from .serializers import (
     NotificationDetailSerializer,
     UpdateDetailNotificationSerializer,
     DeleteDetailNotificationSerializer,
-    MessageCreateSerializer,    # для теста
-    ResultsSerializer,
     AllMessageSerializer,
-    MessageDetailSerializer
+    MessageDetailSerializer,
 )
 
 
@@ -34,7 +28,7 @@ class NewClientCreateAPIView(generics.CreateAPIView):
 
 class GetClientListView(generics.ListAPIView):
     """Вывод списка клиентов"""
-    queryset = Client.objects.all()
+    queryset = Client.objects.filter(unvisible_client=False)
     serializer_class = ClientSerializer
 
 
@@ -65,14 +59,15 @@ class NewNotificationCreateAPIView(generics.CreateAPIView):
 
 class GetNotificationtListView(generics.ListAPIView):
     """Вывод списка рассылок"""
-    queryset = Notification.objects.prefetch_related(
-        'to_notification').filter(to_notification__status='No Sent')    # тут закончить, регистр
+    queryset = queryset = Notification.objects.filter(unvisible_notification=False).prefetch_related(
+        Prefetch('to_notification', queryset=Message.objects.order_by('status')))
     serializer_class = NotificationSerializer
 
 
 class GetNotificationDetailRetrieveAPIView(generics.RetrieveAPIView):
     """Вывод детальной информации о рассылке"""
-    queryset = Notification.objects.all()
+    queryset = Notification.objects.prefetch_related(
+        Prefetch('to_notification', queryset=Message.objects.order_by('status')))
     serializer_class = NotificationDetailSerializer
     lookup_field = 'pk'
 
@@ -89,22 +84,9 @@ class DeleteNotificationRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     serializer_class = DeleteDetailNotificationSerializer
 
 
-class NewMessageCreateAPIView(generics.CreateAPIView):    # для теста
-    """Создание сообщения"""
-    queryset = Message.objects.all()
-    serializer_class = MessageCreateSerializer
-
-
 class GetMessagestListView(generics.ListAPIView):
-    """Вывод результатов"""
-    queryset = Notification.objects.prefetch_related(
-        'to_notification')
-    serializer_class = ResultsSerializer
-
-
-class GetMessagestListView(generics.ListAPIView):
-    """Вывод результатов"""
-    queryset = Message.objects.all()
+    """Вывод всех сообщений статуса"""
+    queryset = Message.objects.all().order_by('-create_date')
     serializer_class = AllMessageSerializer
 
 
