@@ -66,7 +66,7 @@ class NewNotificationCreateAPIView(generics.CreateAPIView):
 class GetNotificationtListView(generics.ListAPIView):
     """Вывод списка рассылок"""
     queryset = Notification.objects.prefetch_related(
-        'to_notification').filter(to_notification__status='Success')    # тут закончить
+        'to_notification').filter(to_notification__status='No Sent')    # тут закончить, регистр
     serializer_class = NotificationSerializer
 
 
