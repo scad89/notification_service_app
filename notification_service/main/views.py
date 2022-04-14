@@ -16,6 +16,10 @@ from .serializers import (
     NotificationDetailSerializer,
     UpdateDetailNotificationSerializer,
     DeleteDetailNotificationSerializer,
+    MessageCreateSerializer,    # для теста
+    ResultsSerializer,
+    AllMessageSerializer,
+    MessageDetailSerializer
 )
 
 
@@ -61,7 +65,8 @@ class NewNotificationCreateAPIView(generics.CreateAPIView):
 
 class GetNotificationtListView(generics.ListAPIView):
     """Вывод списка рассылок"""
-    queryset = Notification.objects.all()
+    queryset = Notification.objects.prefetch_related(
+        'to_notification').filter(to_notification__status='Success')    # тут закончить
     serializer_class = NotificationSerializer
 
 
@@ -82,3 +87,29 @@ class DeleteNotificationRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     """Удаление рассылки"""
     queryset = Notification.objects.all()
     serializer_class = DeleteDetailNotificationSerializer
+
+
+class NewMessageCreateAPIView(generics.CreateAPIView):    # для теста
+    """Создание сообщения"""
+    queryset = Message.objects.all()
+    serializer_class = MessageCreateSerializer
+
+
+class GetMessagestListView(generics.ListAPIView):
+    """Вывод результатов"""
+    queryset = Notification.objects.prefetch_related(
+        'to_notification')
+    serializer_class = ResultsSerializer
+
+
+class GetMessagestListView(generics.ListAPIView):
+    """Вывод результатов"""
+    queryset = Message.objects.all()
+    serializer_class = AllMessageSerializer
+
+
+class GetMessageDetailRetrieveAPIView(generics.RetrieveAPIView):
+    """Вывод детальной информации о сообщении"""
+    queryset = Message.objects.all()
+    serializer_class = MessageDetailSerializer
+    lookup_field = 'pk'
