@@ -4,20 +4,39 @@
 #
 #    pip-compile
 #
+amqp==5.1.0
+    # via kombu
 asgiref==3.5.0
     # via django
+async-timeout==4.0.2
+    # via redis
 attrs==21.4.0
     # via pytest
-backports-zoneinfo==0.2.1
-    # via django
+billiard==3.6.4.0
+    # via celery
+celery==5.2.6
+    # via
+    #   -r requirements.in
+    #   django-celery-beat
+    #   flower
 certifi==2021.10.8
     # via requests
 charset-normalizer==2.0.12
     # via requests
 click==8.1.2
     # via
+    #   celery
+    #   click-didyoumean
+    #   click-plugins
+    #   click-repl
     #   pip-compile-multi
     #   pip-tools
+click-didyoumean==0.3.0
+    # via celery
+click-plugins==1.1.1
+    # via celery
+click-repl==0.2.0
+    # via celery
 coreapi==2.3.3
     # via
     #   -r requirements.in
@@ -29,20 +48,26 @@ coreschema==0.0.4
     #   drf-yasg
 coverage[toml]==6.3.2
     # via pytest-cov
-django==4.0.3
+deprecated==1.2.13
+    # via redis
+django==3.2.13
     # via
     #   -r requirements.in
     #   django-annoying
+    #   django-celery-beat
     #   django-cors-headers
     #   django-js-asset
     #   django-ranged-response
     #   django-simple-captcha
     #   django-taggit
+    #   django-timezone-field
     #   djangorestframework
     #   drf-yasg
 django-annoying==0.10.6
     # via -r requirements.in
-django-ckeditor==6.3.1
+django-celery-beat==2.2.1
+    # via -r requirements.in
+django-ckeditor==6.3.2
     # via -r requirements.in
 django-cors-headers==3.11.0
     # via -r requirements.in
@@ -60,14 +85,20 @@ django-taggit==2.1.0
     # via -r requirements.in
 django-templated-mail==1.1.1
     # via -r requirements.in
+django-timezone-field==4.2.3
+    # via django-celery-beat
 djangorestframework==3.13.1
     # via
     #   -r requirements.in
     #   drf-yasg
 drf-yasg==1.20.0
     # via -r requirements.in
+flower==1.0.0
+    # via -r requirements.in
 gunicorn==20.1.0
     # via -r requirements.in
+humanize==4.0.0
+    # via flower
 idna==3.3
     # via requests
 inflection==0.5.1
@@ -80,12 +111,15 @@ jinja2==3.1.1
     # via
     #   -r requirements.in
     #   coreschema
+kombu==5.2.4
+    # via celery
 markupsafe==2.1.1
     # via jinja2
 packaging==21.3
     # via
     #   drf-yasg
     #   pytest
+    #   redis
 pep517==0.12.0
     # via pip-tools
 phonenumberslite==8.12.46
@@ -98,13 +132,17 @@ pip-tools==6.6.0
     # via pip-compile-multi
 pluggy==1.0.0
     # via pytest
+prometheus-client==0.14.1
+    # via flower
+prompt-toolkit==3.0.29
+    # via click-repl
 psycopg2==2.9.3
     # via -r requirements.in
 psycopg2-binary==2.9.3
     # via -r requirements.in
 py==1.11.0
     # via pytest
-pyparsing==3.0.7
+pyparsing==3.0.8
     # via packaging
 pytest==7.1.1
     # via
@@ -115,12 +153,23 @@ pytest-cov==3.0.0
     # via -r requirements.in
 pytest-django==4.5.2
     # via -r requirements.in
+python-crontab==2.6.0
+    # via django-celery-beat
 python-dateutil==2.8.2
-    # via -r requirements.in
+    # via
+    #   -r requirements.in
+    #   python-crontab
 python-dotenv==0.20.0
     # via -r requirements.in
 pytz==2022.1
-    # via djangorestframework
+    # via
+    #   celery
+    #   django
+    #   django-timezone-field
+    #   djangorestframework
+    #   flower
+redis==4.2.2
+    # via -r requirements.in
 requests==2.27.1
     # via coreapi
 ruamel-yaml==0.17.21
@@ -129,6 +178,7 @@ ruamel-yaml-clib==0.2.6
     # via ruamel-yaml
 six==1.16.0
     # via
+    #   click-repl
     #   django-annoying
     #   python-dateutil
 sqlparse==0.4.2
@@ -142,14 +192,25 @@ tomli==2.0.1
     #   pytest
 toposort==1.7
     # via pip-compile-multi
+tornado==6.1
+    # via flower
 uritemplate==4.1.1
     # via
     #   coreapi
     #   drf-yasg
 urllib3==1.26.9
     # via requests
+vine==5.0.0
+    # via
+    #   amqp
+    #   celery
+    #   kombu
+wcwidth==0.2.5
+    # via prompt-toolkit
 wheel==0.37.1
     # via pip-tools
+wrapt==1.14.0
+    # via deprecated
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip

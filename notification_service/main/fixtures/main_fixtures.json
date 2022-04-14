@@ -1,0 +1,80 @@
+[
+    {
+    "model": "main.Client",
+    "pk": 1,
+    "fields": {
+        "name" : "Вася",
+        "surname": "Пупкин",
+        "phone": "+79221110500",
+        "mobile_code": "922",
+        "slug": "CH",
+        "time_zone": "Europe/Moscow",
+        "unvisible_client": false
+    }
+    },
+    {
+        "model": "main.Client",
+        "pk": 2,
+        "fields": {
+            "name" : "Петя",
+            "surname": "Букин",
+            "phone": "+79221110511",
+            "mobile_code": "922",
+            "slug": "SC",
+            "time_zone": "Europe/Moscow",
+            "unvisible_client": false
+        }
+    },
+    {
+        "model": "main.Client",
+        "pk": 3,
+        "fields": {
+            "name" : "Кеша",
+            "surname": "Рыбки",
+            "phone": "+79221110523",
+            "mobile_code": "922",
+            "slug": "ST",
+            "time_zone": "Europe/Moscow",
+            "unvisible_client": false
+        }
+    },
+    {
+        "model": "main.Client",
+        "pk": 4,
+        "fields": {
+            "name" : "Эдуард",
+            "surname": "Пышкин",
+            "phone": "+79221110556",
+            "mobile_code": "922",
+            "slug": "WR",
+            "time_zone": "Europe/Moscow",
+            "unvisible_client": false
+        }
+    },
+    {
+        "model": "main.Client",
+        "pk": 5,
+        "fields": {
+            "name" : "Добрыня",
+            "surname": "Лёгкий",
+            "phone": "+79221110514",
+            "mobile_code": "922",
+            "slug": "RT",
+            "time_zone": "Europe/Moscow",
+            "unvisible_client": false
+        }
+    },
+    {
+        "model": "main.Client",
+        "pk": 6,
+        "fields": {
+            "name" : "Эдик",
+            "surname": "Мышкин",
+            "phone": "+79221110581",
+            "mobile_code": "922",
+            "slug": "WR",
+            "time_zone": "Europe/Moscow",
+            "unvisible_client": false
+        }
+    }
+]

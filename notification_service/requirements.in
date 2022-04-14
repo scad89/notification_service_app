@@ -1,10 +1,11 @@
 sqlparse
 coreapi
 coreschema
-Django
+Django>=2.2,<4.1
 djangorestframework
 drf-yasg
 django-annoying
+django-celery-beat
 django-ckeditor
 django-cors-headers
 django-js-asset
@@ -23,6 +24,10 @@ pytest-django
 python-dateutil
 python-dotenv
 phonenumberslite
+celery
+redis
+flower
+
 
 
 

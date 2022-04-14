@@ -35,13 +35,6 @@ class Notification(models.Model):
 class Client(models.Model):
     TIMEZONES = tuple(zip(pytz.all_timezones, pytz.all_timezones))
 
-    # class Slug(models.TextChoices):
-    #     CHILD = 'CH'
-    #     SCHOOLBOY = 'SC'
-    #     STUDENT = 'ST'
-    #     WORKER = 'WR'
-    #     RETIREE = 'RT'
-
     name = models.CharField(max_length=15, default='name')
     surname = models.CharField(max_length=15, default='surname')
     phone = PhoneNumberField(unique=True, region='RU')
@@ -65,8 +58,9 @@ class Message(models.Model):
     class Status(models.TextChoices):
         Success = 'Success'
         Waiting = 'Waiting'
-        Fail = 'Fail'
+        No_Sent = 'No Sent'
         Error = 'Error'
+        Wrong_Time = 'Wrong Time'
 
     create_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(choices=Status.choices, max_length=10)
