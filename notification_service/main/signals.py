@@ -6,22 +6,22 @@ from .tasks import send_notification
 
 @receiver(post_save, sender=Notification, dispatch_uid="create_message")
 def create_message(sender, instance, created, **kwargs):
-    if created:
-        notification = Notification.objects.filter(id=instance.id).first()
+    if kwargs:
+        notification = Notification.objects.filter(id=instance.pk).first()
         clients = Client.objects.filter(unvisible_client=False).filter(
-            slug=notification.slug).all()
+            slug=notification.filter).all()
 
         for client in clients:
             Message.objects.create(
                 status="No Sent",
-                id_notification=instance.id,
-                id_client=client.id
+                id_notification=instance,
+                id_client=client
             )
             message = Message.objects.filter(
-                id_notification=instance.id, id_client=client.id).first()
+                id_notification=notification.id, id_client=client.id).first()
             data = {
                 'id': message.id,
-                "phone": client.phone,
+                "phone": client.phone.__dict__,
                 "text": notification.text
             }
             notification_id = notification.id
