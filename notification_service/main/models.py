@@ -65,7 +65,7 @@ class Message(models.Model):
     create_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(choices=Status.choices, max_length=10)
     id_notification = models.ForeignKey(
-        Notification, on_delete=models.DO_NOTHING, related_name='to_notifiacation')
+        Notification, on_delete=models.DO_NOTHING, related_name='to_notification')
     id_client = models.ForeignKey(
         Client, on_delete=models.DO_NOTHING, related_name='to_client')
 

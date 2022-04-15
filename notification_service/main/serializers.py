@@ -1,5 +1,48 @@
+from attr import field
 from rest_framework import serializers
 from .models import Notification, Client, Message
+
+
+class MessageSerializer(serializers.ModelSerializer):
+    """Статусы сообщений для вывода в статистике"""
+    class Meta:
+        model = Message
+        fields = ['pk', 'status']
+
+
+class AllMessageSerializer(serializers.ModelSerializer):
+    """Вывод всех сообщений"""
+    id_notification = serializers.SlugRelatedField(
+        slug_field='name_notification', read_only=True)
+    id_client = serializers.SlugRelatedField(
+        slug_field='surname', read_only=True)
+
+    class Meta:
+        model = Message
+        fields = ['pk', 'status', 'id_notification', 'id_client']
+
+
+class MessageDeatailSerializer(serializers.ModelSerializer):
+    """Вывод детальной информации о сообщении статуса"""
+    id_client = serializers.SlugRelatedField(
+        slug_field='surname', read_only=True)
+
+    class Meta:
+        model = Message
+        fields = ['pk', 'create_date', 'status',
+                  'id_client']
+
+
+class MessageDetailSerializer(serializers.ModelSerializer):
+    """Вывод детальной информации о клиенте"""
+    id_notification = serializers.SlugRelatedField(
+        slug_field='name_notification', read_only=True)
+    id_client = serializers.SlugRelatedField(
+        slug_field='surname', read_only=True)
+
+    class Meta:
+        model = Message
+        fields = '__all__'
 
 
 class ClientCreateSerializer(serializers.ModelSerializer):
@@ -8,9 +51,6 @@ class ClientCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client
         fields = ['name', 'surname', 'phone', 'slug', 'time_zone']
-
-        def save(self):
-            mobile_code = self.validated_data['phone'][1:4]
 
 
 class ClientSerializer(serializers.ModelSerializer):
@@ -52,20 +92,26 @@ class NotificationCreateSerializer(serializers.ModelSerializer):
 
 class NotificationSerializer(serializers.ModelSerializer):
     """Вывод всех рассылок"""
+    to_notification = MessageSerializer(many=True)
+    count_status = serializers.SerializerMethodField()
+
     class Meta:
         model = Notification
-        exclude = ['filter', 'start_date',
-                   'end_date', 'unvisible_notification']
+        fields = ['name_notification', 'to_notification', 'count_status']
+
+    def get_count_status(self, obj):
+        return obj.to_notification.count()
 
 
 class NotificationDetailSerializer(serializers.ModelSerializer):
     """Вывод детальной информации о рассылке"""
     url = serializers.CharField(source='get_absolute_url', read_only=True)
+    to_notification = MessageDeatailSerializer(many=True)
 
     class Meta:
         model = Notification
         fields = ['name_notification', 'text',
-                  'filter', 'start_date', 'end_date', 'url']
+                  'filter', 'start_date', 'end_date', 'url', 'to_notification']
 
 
 class UpdateDetailNotificationSerializer(serializers.ModelSerializer):

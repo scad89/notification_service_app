@@ -1,10 +1,6 @@
-import datetime
-from django.forms import ValidationError
-from rest_framework.response import Response
 from rest_framework import generics
-from rest_framework import permissions
 from .models import Notification, Client, Message
-from rest_framework import viewsets
+from django.db.models import Prefetch
 from .serializers import (
     ClientCreateSerializer,
     ClientSerializer,
@@ -16,6 +12,8 @@ from .serializers import (
     NotificationDetailSerializer,
     UpdateDetailNotificationSerializer,
     DeleteDetailNotificationSerializer,
+    AllMessageSerializer,
+    MessageDetailSerializer,
 )
 
 
@@ -30,7 +28,7 @@ class NewClientCreateAPIView(generics.CreateAPIView):
 
 class GetClientListView(generics.ListAPIView):
     """Вывод списка клиентов"""
-    queryset = Client.objects.all()
+    queryset = Client.objects.filter(unvisible_client=False)
     serializer_class = ClientSerializer
 
 
@@ -61,13 +59,15 @@ class NewNotificationCreateAPIView(generics.CreateAPIView):
 
 class GetNotificationtListView(generics.ListAPIView):
     """Вывод списка рассылок"""
-    queryset = Notification.objects.all()
+    queryset = queryset = Notification.objects.filter(unvisible_notification=False).prefetch_related(
+        Prefetch('to_notification', queryset=Message.objects.order_by('status')))
     serializer_class = NotificationSerializer
 
 
 class GetNotificationDetailRetrieveAPIView(generics.RetrieveAPIView):
     """Вывод детальной информации о рассылке"""
-    queryset = Notification.objects.all()
+    queryset = Notification.objects.prefetch_related(
+        Prefetch('to_notification', queryset=Message.objects.order_by('status')))
     serializer_class = NotificationDetailSerializer
     lookup_field = 'pk'
 
@@ -82,3 +82,16 @@ class DeleteNotificationRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     """Удаление рассылки"""
     queryset = Notification.objects.all()
     serializer_class = DeleteDetailNotificationSerializer
+
+
+class GetMessagestListView(generics.ListAPIView):
+    """Вывод всех сообщений статуса"""
+    queryset = Message.objects.all().order_by('-create_date')
+    serializer_class = AllMessageSerializer
+
+
+class GetMessageDetailRetrieveAPIView(generics.RetrieveAPIView):
+    """Вывод детальной информации о сообщении"""
+    queryset = Message.objects.all()
+    serializer_class = MessageDetailSerializer
+    lookup_field = 'pk'

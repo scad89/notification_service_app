@@ -23,4 +23,8 @@ urlpatterns = [
          views.UpdateNotificationRetrieveUpdateAPIView.as_view(), name='update_notification'),
     path('notification/<int:pk>/delete_notification/',
          views.DeleteNotificationRetrieveUpdateAPIView.as_view(), name='delete_notification'),
+    path('messages/', views.GetMessagestListView.as_view(),
+         name='messages'),
+    path("message/<int:pk>/", views.GetMessageDetailRetrieveAPIView.as_view(),
+         name='detail_message'),
 ]
