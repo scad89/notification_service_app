@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'phonenumber_field',
     'django_celery_beat',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
