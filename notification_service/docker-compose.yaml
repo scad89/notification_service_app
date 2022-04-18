@@ -3,23 +3,16 @@ version: "3.3"
 services:
   db:
     image: postgres:13-alpine3.14
-    environment:
-      - POSTGRES_NAME=notification_service
-      - POSTGRES_USER=postgres
-      - POSTGRES_HOST=db
     env_file:
-      - .env
-
-
+      - .env_docker
 
   web:
     restart: always
     build: 
       context: ./
       dockerfile: Dockerfile
-    environment:
-      - POSTGRES_NAME=postgres
-      - POSTGRES_HOST=db
+    env_file:
+      - .env_docker
     ports:
       - target: 8000
         published: 8000
@@ -33,56 +26,33 @@ services:
     container_name: redis
     restart: always
 
-
   celery:
     container_name: celery
-    build: .
-    command: celery worker --app=notification_service --loglevel=info
-    environment:
-      - CELERY_BROKER_URL=redis://redis:6379/0
-      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    build:
+      context: .
+      dockerfile: Dockerfile_celery
+    command: celery -A notification_service worker -l info
     env_file:
-      - .env
+      - .env_docker
     depends_on:
       - db
       - web
       - redis
 
-
-
-
-  # redis:
-  #   container_name: redis
-  #   image: redis:alpine
-  #   restart: unless-stopped
-
-  # celery:
-  #   build: .
-  #   command: celery worker --app=notification_service --loglevel=info
-  #   environment:
-  #     - CELERY_BROKER_URL=redis://redis:6379/0
-  #     - CELERY_RESULT_BACKEND=redis://redis:6379/0
-  #     - POSTGRES_HOST=db
-  #   depends_on:
-  #     - redis
-  #     - web
-  #     - db
-
-
-  # dashboard:
-  #   container_name: dashboard
-  #   build: .
-  #   command: flower --app=notification_service --port=5555 broker=redis://redis:6379/0
-  #   ports:
-  #     - 5555:5555
-  #   environment:
-  #     - CELERY_BROKER_URL=redis://redis:6379/0
-  #     - CELERY_RESULT_BACKEND=redis://redis:6379/0
-  #     - POSTGRES_HOST=db
-  #   depends_on:
-  #     - redis
-  #     - web
-  #     - celery  
+  flower:
+    container_name: flower
+    build:
+      context: .
+      dockerfile: Dockerfile_celery
+    command: celery -A notification_service flower --port=5555
+    ports:
+      - 5555:5555
+    env_file:
+      - .env_docker
+    depends_on:
+      - redis
+      - web
+      - celery  
 
 
 
