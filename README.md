@@ -33,18 +33,21 @@
    - python manage.py runserver
 6. Запустить Celery в отдельном терминале:
    - celery -A notification_service worker -l info
-7. Запустить flower в отдельно терминале:
+7. Запустить flower в отдельном терминале:
    - celery -A notification_service flower --port=5555
-
-## Установка и запуск(docker-compose):
-
-    В разработке
+   ```
+   http://127.0.0.1:5555
+   ```
 
 ## Описание методов и документация:
 
 ```
 http://127.0.0.1:8000/docs/
 ```
+
+## Установка и запуск(docker-compose):
+
+    В разработке
 
 ### Дополнительно реализовано:
 
