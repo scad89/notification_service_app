@@ -3,3 +3,4 @@
 /test
 *.pyc
 notification_service/.env
+notification_service/.env_docker

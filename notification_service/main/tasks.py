@@ -28,13 +28,13 @@ def check_periodic_task(notification_name):
         name=f'Create task: {notification_name}')
 
 
-def create_periodic_task(notification_name, id_notification, id_client, time, data):
+def create_periodic_task(notification_name, phone, id_notification, id_client, time, data):
     schedule, created = IntervalSchedule.objects.get_or_create(
         every=time,
         period=IntervalSchedule.SECONDS,
     )
     return PeriodicTask.objects.create(
-        name=f'Create task: {notification_name}',
+        name=f'Create task: {notification_name} for {phone}',
         task='send_notification',
         interval=schedule,
         args=json.dumps([id_notification, id_client, data]),
@@ -57,6 +57,7 @@ def send_notification(self, notification_id, client_id, data, url=URL, token=TOK
                 f"Wrong time to send notification '{data['id']}'. Need to try later")
             Message.objects.filter(pk=data['id']).update(status='Wrong Time')
             create_periodic_task(notification.name_notification,
+                                 client.phone,
                                  notification.id,
                                  client.id,
                                  60*60,
@@ -76,7 +77,8 @@ def send_notification(self, notification_id, client_id, data, url=URL, token=TOK
                     name=f'Create task: {notification.name_notification}').exists()
                 if task_error:
                     complete_task(task_error)
-                create_periodic_task(notification.name,
+                create_periodic_task(notification.name_notification,
+                                     client.phone,
                                      notification.id,
                                      client.id,
                                      20,
@@ -94,6 +96,7 @@ def send_notification(self, notification_id, client_id, data, url=URL, token=TOK
         message_waiting = message.get(pk=data['id'])
         message_waiting.update(status='Waiting')
         create_periodic_task(notification.name_notification,
+                             client.phone,
                              notification.id,
                              client.id,
                              60*60*24,

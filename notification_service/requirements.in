@@ -27,6 +27,7 @@ phonenumberslite
 celery
 redis
 flower
+django-phonenumber-field
 
 
 
