@@ -36,7 +36,6 @@ services:
       - .env_docker
     depends_on:
       - db
-      - web
       - redis
 
   flower:
@@ -50,8 +49,6 @@ services:
     env_file:
       - .env_docker
     depends_on:
-      - redis
-      - web
       - celery  
 
 

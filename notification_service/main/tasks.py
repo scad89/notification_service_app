@@ -93,8 +93,7 @@ def send_notification(self, notification_id, client_id, data, url=URL, token=TOK
                     complete_task(task_success)
 
     elif date_and_time_client < notification.start_date:
-        message_waiting = message.get(pk=data['id'])
-        message_waiting.update(status='Waiting')
+        Message.objects.filter(pk=data['id']).update(status='Waiting')
         create_periodic_task(notification.name_notification,
                              client.phone,
                              notification.id,
