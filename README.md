@@ -68,11 +68,16 @@ http://127.0.0.1:5555 -по этому адресу можно открыть fl
 
 1. Добавить файл с переменными окружения(.env_docker) в корень проекта
 2. Запустить командой:
+
+```
    - sudo docker-compose up -d
+```
 
 Если необходимо пересобрать контейнеры(внесли какие-то изменения) использовать:
 
-- sudo docker-compose up -d
+```
+   - sudo docker-compose up --build
+```
 
 Если Вы запускаете проект на Windows, а docker из-под виртуальной машины(по типу VirtualBox), проект
 по адресу 0.0.0.0:8000 может не открыться. Тогда необходимо использовать 192.168.99.100:8000
@@ -80,7 +85,7 @@ http://127.0.0.1:5555 -по этому адресу можно открыть fl
 Для остановки контейнеров используйте команду:
 
 ```
-docker-compose down -v
+   - docker-compose down -v
 ```
 
 ## Описание методов и документация:
@@ -119,3 +124,4 @@ http://127.0.0.1:8000/docs/
 - Vk.com: [Igor Komkov](https://vk.com/zzzscadzzz)
 - Linkedin: [Igor Komkov](https://www.linkedin.com/in/igor-komkov/)
 - email: **scad200@gmail.com**
+- Telegram: **@zzzSCADzzz**
